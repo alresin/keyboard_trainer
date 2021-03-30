@@ -11,6 +11,8 @@ from kivy.uix.label import Label
 from kivy.graphics import Color, Rectangle
 from kivy.app import App
 
+from time import time
+
 
 Window.size = WINDOW_SIZE
 Window.title = APP_NAME
@@ -78,6 +80,9 @@ class MenuBackground(Widget):
 
 class keyboardListener(Widget):
     letterNumber = 0
+    start_time = time()
+    total_clicks = 0
+
     def __init__(self, text, TextLabel):
         super().__init__()
         
@@ -94,10 +99,14 @@ class keyboardListener(Widget):
 
 
     def _keyboard_closed(self):
+        end_time = time()
         log('keyboard closed')
         self._keyboard.unbind(on_key_down=self._on_keyboard_down)
         self._keyboard = None
-        log('You wrote it!')
+        print('You wrote it!')
+        print('Your speed:', 60 * (self.letterNumber) / (end_time - self.start_time))
+        print('Your time:', round(end_time - self.start_time, 1))
+        print('Your mistakes:', self.total_clicks - self.letterNumber)
         exit()
 
 
@@ -106,9 +115,12 @@ class keyboardListener(Widget):
         log(' - text is %r' % text)
         log(' - modifiers are %r' % modifiers)
 
+        if len(keycode[1]) == 1 or keycode[1] == 'spacebar':           # if letter or digit or space
+            self.total_clicks += 1
+
+
         if (match(text, self.text[self.letterNumber], modifiers)):
                 log('Right letter!!!')
-
                 self.letterNumber += 1
                 self.TextLabel.text = '[color=ff0000]' + self.text[:self.letterNumber] + \
                                         '[/color]' + self.text[self.letterNumber:]
