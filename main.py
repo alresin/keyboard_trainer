@@ -1,9 +1,8 @@
-from gui import *
+from logic import KeyboardTrainer
 
 
 def main():
-    kt = KeyboardTrainApp()
-    kt.run()
+    app = KeyboardTrainer()
 
 
 if __name__ == "__main__":
