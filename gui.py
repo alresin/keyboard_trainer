@@ -1,4 +1,5 @@
-from config import DEBUG, APP_NAME, WINDOW_SIZE, HINT_TEXT, BACKGROUND_COLOR
+from config import DEBUG, APP_NAME, WINDOW_SIZE, HINT_TEXT, BACKGROUND_COLOR,\
+                   MINIMUM_WIDTH, MINIMUM_HEIGHT
 from utils import log, formSpeed
 
 from kivy.uix.floatlayout import FloatLayout
@@ -13,6 +14,8 @@ from kivy.app import App
 
 
 Window.size = WINDOW_SIZE
+Window.minimum_width = MINIMUM_WIDTH
+Window.minimum_height = MINIMUM_HEIGHT
 Window.title = APP_NAME
 Window.clearcolor = BACKGROUND_COLOR
 

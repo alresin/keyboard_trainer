@@ -1,6 +1,6 @@
-from utils import log, match, calculateSpeed, readFromJson, sendToJson
+from utils import log, match, calculateSpeed, readFromJson, sendToJson,\
+                  blendAndShow
 from gui import KeyboardTrainApp, KeyboardListener
-from processing import blendAndShow
 
 from collections import defaultdict
 import time

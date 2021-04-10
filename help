@@ -1,0 +1,10 @@
+'''
+b = r"ё1234567890-=йцукенгшщзхъ\фывапролджэячсмитьбю."
+A = r'~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?'
+B = r'Ё!"№;%:?*()_+ЙЦУКЕНГШЩЗХЪ/ФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,'
+a = r"`1234567890-=qwertyuiop[]\asdfghjkl;'zxcvbnm,./"
+e2r = {a[i]:b[i] for i in range(len(a))}
+r2e = {b[i]:a[i] for i in range(len(a))}
+E2R = {A[i]:B[i] for i in range(len(a))}
+R2E = {B[i]:A[i] for i in range(len(a))}
+'''
