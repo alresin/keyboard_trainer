@@ -22,7 +22,8 @@ class KeyboardTrainer:
         if (len(insertedText) == 0):
             return
 
-        self.keyboardInput = KeyboardInput(insertedText, self.app, self.endInput)
+        self.keyboardInput = KeyboardInput(insertedText,
+                                           self.app, self.endInput)
         self.app.newPhrase(self.keyboardInput, insertedText)
 
     def endInput(self, textLen, totalClicks, inputTime, wrongLetters):
@@ -32,7 +33,7 @@ class KeyboardTrainer:
         nowMistakes = totalClicks - textLen
 
         data = readFromJson()
-        if 'totalClicks'in data and data['totalClicks'] != 0:
+        if 'totalClicks' in data and data['totalClicks'] != 0:
             data['averageSpeed'] *= data['totalClicks']
             data['averageSpeed'] += totalClicks * nowSpeed
             data['totalClicks'] += totalClicks
