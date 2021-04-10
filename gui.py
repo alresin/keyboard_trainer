@@ -79,7 +79,7 @@ class KeyboardTrainApp(App):
         """Make menu with buttons and textarea"""
         Menu = BoxLayout(spacing=3,
                          orientation='vertical',
-                         size_hint=(.5, .4),
+                         size_hint=(.5, .5),
                          pos_hint={'top': 0.6, 'right': 0.75})
         self.MainLayout.add_widget(Menu)
 
@@ -88,6 +88,8 @@ class KeyboardTrainApp(App):
         Menu.add_widget(self.TextInputWidget)
         Menu.add_widget(Button(text='Start',
                                on_press=self.kt.newInput))
+        Menu.add_widget(Button(text='Show mistakes heatmap',
+                               on_press=self.kt.showHeatmap))
         Menu.add_widget(Button(text='Reset statistics',
                                on_press=self.kt.reset))
         Menu.add_widget(Button(text='Exit',

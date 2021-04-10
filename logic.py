@@ -1,8 +1,9 @@
 from utils import log, match, calculateSpeed, readFromJson, sendToJson
 from gui import KeyboardTrainApp, KeyboardListener
+from processing import blendAndShow
+
 from collections import defaultdict
 import time
-import json
 
 
 class KeyboardTrainer:
@@ -71,6 +72,11 @@ class KeyboardTrainer:
             return ' '.join([str(x[1]) for x in heatmap][:5])
         else:
             return 'No statistics yet'
+
+    def showHeatmap(self, instance):
+        """Make a heatmap of mistakes buttons and show it"""
+        data = readFromJson()
+        blendAndShow(data['wrongLetters'])
 
     def exit(self, instance):
         """Exit the app"""
