@@ -2,7 +2,9 @@ WINDOW_SIZE = (1024, 576)
 APP_NAME = "Keyboard train"
 MAX_SPEED = 1000
 DEBUG = True
-HINT_TEXT = 'Это предложение для набора текста'
+HINT_TEXT = 'This is a suggestion for typing'
+STAT_FILE_NAME = 'stat.json'
+BACKGROUND_COLOR = (.89, .89, .71, 1)
 
 e2E = {'`':'~','1':'!','2':'@','3':'#','4':'$','5':'%','6':'^','7':'&','8':'*',
     '9':'(','0':')','-':'_','=':'+','q':'Q','w':'W','e':'E','r':'R','t':'T',
