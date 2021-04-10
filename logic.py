@@ -22,8 +22,8 @@ class KeyboardTrainer:
         if (len(insertedText) == 0):
             return
 
-        keyboardInput = KeyboardInput(insertedText, self.app, self.endInput)
-        self.app.newPhrase(keyboardInput, insertedText)
+        self.keyboardInput = KeyboardInput(insertedText, self.app, self.endInput)
+        self.app.newPhrase(self.keyboardInput, insertedText)
 
     def endInput(self, textLen, totalClicks, inputTime, wrongLetters):
         """Move current data to the file with statistics
@@ -32,7 +32,7 @@ class KeyboardTrainer:
         nowMistakes = totalClicks - textLen
 
         data = readFromJson()
-        if 'averageSpeed' in data:
+        if 'totalClicks'in data and data['totalClicks'] != 0:
             data['averageSpeed'] *= data['totalClicks']
             data['averageSpeed'] += totalClicks * nowSpeed
             data['totalClicks'] += totalClicks
@@ -55,7 +55,12 @@ class KeyboardTrainer:
         log('Your mistakes:', nowMistakes)
         log('Your average speed:', data['averageSpeed'])
 
+        self.keyboardInput = None
         self.app.endMenu(nowSpeed, nowMistakes, data['averageSpeed'])
+
+    def interupt(self, instance):
+        """Interupts input"""
+        self.keyboardInput.interupt()
 
     def reset(self, instance):
         """Delete all saved statistics"""
@@ -89,6 +94,7 @@ class KeyboardInput:
     letterNumber = 0
     startTime = 0
     totalClicks = 0
+    needToUnbind = False
     wrongLetters = defaultdict(int)
 
     def __init__(self, text, app, endFunc):
@@ -103,14 +109,16 @@ class KeyboardInput:
         Collect new statistic and starts redrawing window"""
         log('The key', keycode, 'have been pressed')
         log(' - modifiers are %r' % modifiers)
+        if self.needToUnbind:
+            return True
 
-        if (self.startTime == 0):
+        if self.startTime == 0:
             self.startTime = time.time()
 
         if len(keycode[1]) == 1 or keycode[1] == 'spacebar':
             self.totalClicks += 1
 
-        if (match(text, self.text[self.letterNumber], modifiers)):
+        if match(text, self.text[self.letterNumber], modifiers):
             log('Right letter!!!')
             self.letterNumber += 1
             self.app.addLetter(self.letterNumber, self.text)
@@ -121,6 +129,11 @@ class KeyboardInput:
         if len(self.text) == self.letterNumber:
             self.endInput()
             return True
+
+    def interupt(self):
+        """Interupt input and set need to unbind keyboard"""
+        self.needToUnbind = True
+        self.endInput()
 
     def endInput(self):
         """Runs trigger function for the end of the input"""

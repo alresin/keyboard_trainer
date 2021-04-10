@@ -55,6 +55,15 @@ class KeyboardTrainApp(App):
                                font_size=30)
         self.MainLayout.add_widget(self.TextLabel)
 
+        Menu = BoxLayout(spacing=3,
+                         orientation='vertical',
+                         size_hint=(.3, .1),
+                         pos_hint={'top': 0.3, 'right': 0.65})
+        self.MainLayout.add_widget(Menu)
+
+        Menu.add_widget(Button(text='To menu',
+                               on_press=self.kt.interupt))
+
         self.MainLayout.add_widget(KeyboardInput.listener)
 
     def addLetter(self, index, text):
