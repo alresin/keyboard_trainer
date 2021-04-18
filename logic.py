@@ -1,9 +1,11 @@
-from utils import log, match, calculateSpeed, readFromJson, sendToJson,\
-                  blendAndShow
-from gui import KeyboardTrainApp, KeyboardListener
+"""Module with logical part of the keyboard trainer"""
 
 from collections import defaultdict
 import time
+
+from utils import log, match, calculateSpeed, readFromJson, sendToJson,\
+                  getTextFromChosenFile
+from gui import KeyboardTrainApp, KeyboardListener
 
 
 class KeyboardTrainer:
@@ -12,6 +14,7 @@ class KeyboardTrainer:
         """Build the app and run it"""
         self.app = KeyboardTrainApp(self)
         self.app.run()
+        self.keyboardInput = None
 
     def newInput(self, instance):
         """Starts new phase of input with text from the textarea"""
@@ -19,7 +22,7 @@ class KeyboardTrainer:
         insertedText = self.app.TextInputWidget.text
         log('inserted text:', insertedText)
 
-        if (len(insertedText) == 0):
+        if len(insertedText) == 0:
             return
 
         self.keyboardInput = KeyboardInput(insertedText,
@@ -68,26 +71,12 @@ class KeyboardTrainer:
         sendToJson({})
         self.endInput(0, 0, 10, {})
 
-    def mostMissButtons(self):
-        """Return the a list with buttons
-        with most mistakes from statistic file"""
-        data = readFromJson()
-        if 'wrongLetters' in data:
-            heatmap = [(-c, l) for (l, c) in data['wrongLetters'].items()]
-            heatmap.sort()
-            return ' '.join([str(x[1]) for x in heatmap][:5])
-        else:
-            return 'No statistics yet'
-
-    def showHeatmap(self, instance):
-        """Make a heatmap of mistakes buttons and show it"""
-        data = readFromJson()
-        blendAndShow(data['wrongLetters'])
-
-    def exit(self, instance):
-        """Exit the app"""
-        log('Exit')
-        exit()
+    def loadText(self, instance):
+        """Open window to chose file and load text for training from it"""
+        log('load text')
+        text = getTextFromChosenFile()
+        if not text is None:
+            self.app.insertText(text)
 
 
 class KeyboardInput:
@@ -116,7 +105,13 @@ class KeyboardInput:
         if self.startTime == 0:
             self.startTime = time.time()
 
-        if len(keycode[1]) == 1 or keycode[1] == 'spacebar':
+        if keycode[1] == 'enter':
+            text = '\n'
+        if keycode[1] == 'tab':
+            text = '\t'
+
+        if len(keycode[1]) == 1 or keycode[1] == 'spacebar' or\
+           keycode[1] == 'tab' or keycode[1] == 'enter':
             self.totalClicks += 1
 
         if match(text, self.text[self.letterNumber], modifiers):
@@ -124,12 +119,14 @@ class KeyboardInput:
             self.letterNumber += 1
             self.app.addLetter(self.letterNumber, self.text)
         else:
-            log('Wrong letter!!!')
+            log('Wrong letter!!! Got:', text,
+                'I needed:', (self.text[self.letterNumber],))
             self.wrongLetters[self.text[self.letterNumber]] += 1
 
         if len(self.text) == self.letterNumber:
             self.endInput()
             return True
+        return False
 
     def interupt(self):
         """Interupt input and set need to unbind keyboard"""

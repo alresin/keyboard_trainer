@@ -1,3 +1,5 @@
+"""Module which make pixels arrays from text for heatmap"""
+
 char_map = {
     ' ': ((18, 18), (19, 34)),
     '\t': ((8, 1), (9, 4)),

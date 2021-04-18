@@ -1,3 +1,5 @@
+"""Main file of the appclication. Just start the keyboard trainer"""
+
 from logic import KeyboardTrainer
 
 

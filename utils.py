@@ -1,10 +1,13 @@
-from config import e2E, e2r, e2R, DEBUG, STAT_FILE_NAME, MAX_SPEED
-from char_map import get_all_pixels, get_coords
+"""Some useful functions"""
 
+import json
+import easygui
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
-import json
+
+from config import e2E, e2r, e2R, DEBUG, STAT_FILE_NAME, MAX_SPEED
+from char_map import get_all_pixels, get_coords
 
 
 def log(*args):
@@ -15,16 +18,15 @@ def log(*args):
 
 def match(key, target, mod):
     """Answer does the pressed key match with target letter"""
-    if (key == target):
+    if key == target:
         return True
-    if (key not in e2E):
+    if key not in e2E:
         return False
     if ('shift' in mod) ^ ('capslock' in mod):
         # capitalized
-        return (e2R[key] == target) or (e2E[key] == target)
-    else:
-        # lower
-        return (key == target) or (e2r[key] == target)
+        return target in (e2R[key], e2E[key])
+    # lower
+    return target in (key, e2r[key])
 
 
 def calculateSpeed(lettersNumber, time):
@@ -51,8 +53,7 @@ def formSpeed(speed):
     """Limits the speed for the beautiful output"""
     if speed < MAX_SPEED:
         return str(round(speed, 1))
-    else:
-        return '>' + str(MAX_SPEED)
+    return '>' + str(MAX_SPEED)
 
 
 def getFrequencies(contents):
@@ -91,3 +92,30 @@ def blendAndShow(contents):
                cmap='viridis', alpha=0.8)
     plt.imshow(img, extent=(0, 57, 0, 21))
     plt.show()
+
+
+def getTextFromChosenFile():
+    """Load text from the chosen file, return None if no file was chosen"""
+    file_name = easygui.fileopenbox()
+    if file_name is None:
+        return None
+    file = open(file_name, 'r')
+    text = file.read()
+    file.close()
+    return text
+
+
+def mostMissButtons():
+    """Return the a list with buttons
+    with most mistakes from statistic file"""
+    data = readFromJson()
+    if 'wrongLetters' in data:
+        heatmap = [(-c, l) for (l, c) in data['wrongLetters'].items()]
+        heatmap.sort()
+        return ' '.join([str(x[1]) for x in heatmap][:5])
+    return 'No statistics yet'
+
+def showHeatmap(instance):
+    """Make a heatmap of mistakes buttons and show it"""
+    data = readFromJson()
+    blendAndShow(data['wrongLetters'])

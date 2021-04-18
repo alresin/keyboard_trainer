@@ -1,6 +1,4 @@
-from config import DEBUG, APP_NAME, WINDOW_SIZE, HINT_TEXT, BACKGROUND_COLOR,\
-                   MINIMUM_WIDTH, MINIMUM_HEIGHT
-from utils import log, formSpeed
+"""Module with graphical part of the keyboard trainer"""
 
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.boxlayout import BoxLayout
@@ -9,8 +7,11 @@ from kivy.core.window import Window
 from kivy.uix.widget import Widget
 from kivy.uix.button import Button
 from kivy.uix.label import Label
-from kivy.graphics import Color, Rectangle
 from kivy.app import App
+
+from config import APP_NAME, WINDOW_SIZE, HINT_TEXT, BACKGROUND_COLOR,\
+                   MINIMUM_WIDTH, MINIMUM_HEIGHT
+from utils import log, formSpeed, mostMissButtons, showHeatmap
 
 
 Window.size = WINDOW_SIZE
@@ -28,16 +29,20 @@ class KeyboardTrainApp(App):
         """
         super().__init__()
         self.kt = kt
+        self.MainLayout = FloatLayout()
+        self.TextLabel = Label(text='',
+                               markup=True,
+                               color=(.0, .0, .0, 1),
+                               font_size=30)
+        self.TextInputWidget = TextInput(hint_text=HINT_TEXT)
 
     def build(self):
         """Start function of the app.
         Draw the start menu.
         """
-        self.MainLayout = FloatLayout()
-
         self.makeMenu()
 
-        LabelWidget = Label(text="Keyboard train",
+        LabelWidget = Label(text=APP_NAME,
                             pos_hint={'top': 1.3},
                             font_size=50,
                             color=(.2, .2, .2, 1))
@@ -48,29 +53,27 @@ class KeyboardTrainApp(App):
     def newPhrase(self, KeyboardInput, text):
         """Begins a new phase of the letter input"""
         self.MainLayout.clear_widgets()
+        self.TextLabel.text = text
 
-        self.TextLabel = Label(text=text,
-                               markup=True,
-                               color=(.0, .0, .0, 1),
-                               font_size=30)
         self.MainLayout.add_widget(self.TextLabel)
 
-        Menu = BoxLayout(spacing=3,
+        menu = BoxLayout(spacing=3,
                          orientation='vertical',
                          size_hint=(.3, .1),
                          pos_hint={'top': 0.3, 'right': 0.65})
-        self.MainLayout.add_widget(Menu)
+        self.MainLayout.add_widget(menu)
 
-        Menu.add_widget(Button(text='To menu',
+        menu.add_widget(Button(text='To menu',
                                on_press=self.kt.interupt))
 
         self.MainLayout.add_widget(KeyboardInput.listener)
 
     def addLetter(self, index, text):
         """Change the letter color during the input phase"""
-        print(Window.size)
+        log(Window.size)
         self.TextLabel.text = '[color=ff0000]' + text[:index] +\
                               '[/color]' + text[index:]
+        log((self.TextLabel.text,))
 
     def endMenu(self, speed, mistakes, averageSpeed):
         """Draw the menu of with statistics and buttons start and exit"""
@@ -80,7 +83,7 @@ class KeyboardTrainApp(App):
 
         newText = "Speed: " + formSpeed(speed) + '\nMistakes: ' + str(mistakes)
         newText += '\nAverage speed: ' + formSpeed(averageSpeed)
-        newText += '\nMost mistakes buttons: ' + self.kt.mostMissButtons()
+        newText += '\nMost mistakes buttons: ' + mostMissButtons()
         LabelWidget = Label(text=newText,
                             pos_hint={'top': 1.3},
                             font_size=30,
@@ -89,23 +92,31 @@ class KeyboardTrainApp(App):
 
     def makeMenu(self):
         """Make menu with buttons and textarea"""
-        Menu = BoxLayout(spacing=3,
+        menu = BoxLayout(spacing=3,
                          orientation='vertical',
                          size_hint=(.5, .5),
                          pos_hint={'top': 0.6, 'right': 0.75})
-        self.MainLayout.add_widget(Menu)
+        self.MainLayout.add_widget(menu)
 
-        self.TextInputWidget = TextInput(hint_text=HINT_TEXT,
-                                         multiline=False)
-        Menu.add_widget(self.TextInputWidget)
-        Menu.add_widget(Button(text='Start',
-                               on_press=self.kt.newInput))
-        Menu.add_widget(Button(text='Show mistakes heatmap',
-                               on_press=self.kt.showHeatmap))
-        Menu.add_widget(Button(text='Reset statistics',
+        self.TextInputWidget = TextInput(hint_text=HINT_TEXT)
+        menu.add_widget(self.TextInputWidget)
+        start = BoxLayout(spacing=3,
+                          orientation='horizontal')
+        start.add_widget(Button(text='Start',
+                                on_press=self.kt.newInput))
+        start.add_widget(Button(text='Load text',
+                                on_press=self.kt.loadText))
+        menu.add_widget(start)
+        menu.add_widget(Button(text='Show mistakes heatmap',
+                               on_press=showHeatmap))
+        menu.add_widget(Button(text='Reset statistics',
                                on_press=self.kt.reset))
-        Menu.add_widget(Button(text='Exit',
-                               on_press=self.kt.exit))
+        menu.add_widget(Button(text='Exit',
+                               on_press=exit))
+
+    def insertText(self, text):
+        """Change text in text-input widget to given"""
+        self.TextInputWidget.text = text
 
 
 class KeyboardListener(Widget):

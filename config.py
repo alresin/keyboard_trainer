@@ -1,9 +1,11 @@
+"""Configuration file. There are some constants for customize the app"""
+
 WINDOW_SIZE = (1024,  576)
 MINIMUM_WIDTH = 440
 MINIMUM_HEIGHT = 350
 APP_NAME = "Keyboard train"
 MAX_SPEED = 1000
-DEBUG = True
+DEBUG = False
 HINT_TEXT = 'This is a suggestion for typing'
 STAT_FILE_NAME = 'stat.json'
 BACKGROUND_COLOR = (.89,  .89,  .71,  1)
