@@ -20,6 +20,8 @@
 
 ## Информация по запуску
 Для запуска необходимы библиотеки kivy, matplotlib, numpy и easygui.
+(Matplotlib или easygui могут потребовать установки tkinter). Это решается:
+`sudo apt-get install python3-tk`
 Информация по их установке и запуску приложения:
 
 #### Windows CMD:

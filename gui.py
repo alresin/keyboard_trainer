@@ -33,8 +33,8 @@ class KeyboardTrainApp(App):
         self.TextLabel = Label(text='',
                                markup=True,
                                color=(.0, .0, .0, 1),
-                               font_size=30)
-        self.TextInputWidget = TextInput(hint_text=HINT_TEXT)
+                               font_size=40)
+        self.TextInputWidget = TextInput(hint_text=HINT_TEXT, font_size=30)
 
     def build(self):
         """Start function of the app.
@@ -64,6 +64,7 @@ class KeyboardTrainApp(App):
         self.MainLayout.add_widget(menu)
 
         menu.add_widget(Button(text='To menu',
+                               font_size=30,
                                on_press=self.kt.interupt))
 
         self.MainLayout.add_widget(KeyboardInput.listener)
@@ -98,20 +99,25 @@ class KeyboardTrainApp(App):
                          pos_hint={'top': 0.6, 'right': 0.75})
         self.MainLayout.add_widget(menu)
 
-        self.TextInputWidget = TextInput(hint_text=HINT_TEXT)
+        self.TextInputWidget = TextInput(hint_text=HINT_TEXT, font_size=30)
         menu.add_widget(self.TextInputWidget)
         start = BoxLayout(spacing=3,
                           orientation='horizontal')
         start.add_widget(Button(text='Start',
+                                font_size=30,
                                 on_press=self.kt.newInput))
         start.add_widget(Button(text='Load text',
+                                font_size=30,
                                 on_press=self.kt.loadText))
         menu.add_widget(start)
         menu.add_widget(Button(text='Show mistakes heatmap',
+                               font_size=30,
                                on_press=showHeatmap))
         menu.add_widget(Button(text='Reset statistics',
+                               font_size=30,
                                on_press=self.kt.reset))
         menu.add_widget(Button(text='Exit',
+                               font_size=30,
                                on_press=exit))
 
     def insertText(self, text):
